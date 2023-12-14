@@ -1,5 +1,6 @@
 import Seo from "@/components/Seo";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -9,6 +10,7 @@ const Container = styled.div`
   gap: 20px;
 `;
 const Movie = styled.div`
+  cursor: pointer;
   img {
     max-width: 100%;
     border-radius: 12px;
@@ -52,11 +54,19 @@ interface IMovie {
 export default function Home({
   results,
 }: InferGetServerSidePropsType<GetServerSideProps>) {
+  const router = useRouter();
+  const goDetail = (id: number, title: string) => {
+    router.push(`/movies/${title}/${id}`);
+  };
+
   return (
     <Container>
       <Seo title="Home" />
       {results?.map((movie: IMovie) => (
-        <Movie key={movie.id}>
+        <Movie
+          key={movie.id}
+          onClick={() => goDetail(movie.id, movie.original_title)}
+        >
           <img src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`} />
           <h4>{movie.original_title}</h4>
         </Movie>
